@@ -1,0 +1,20 @@
+---
+- name: Initial setup.
+  hosts: all
+  become: true
+  vars:
+    regular_user: "christophe"
+
+  tasks:
+  - name: Update and upgrade apt packages
+    apt:
+      upgrade: 'yes'
+      autoclean: 'yes'
+      autoremove: 'yes'
+      update_cache: 'yes'
+      cache_valid_time: 86400 # 1 day
+
+  - name: Install Elixir
+    apt: 
+      name: ['elixir'] 
+      state: latest
