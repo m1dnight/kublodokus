@@ -1,0 +1,32 @@
+# https://www.digitalocean.com/community/tutorials/how-to-set-up-an-nfs-mount-on-ubuntu-20-04
+---
+- hosts: chiefs
+  become: yes
+  vars:
+    client_range: "192.168.3.0/24"
+  tasks:
+    - name: Ensure NFS is installed.
+      apt: name={{ item }} state=latest update_cache=yes
+      with_items:
+        - nfs-common
+        - nfs-kernel-server
+
+    - name: Create export directory.
+      file: path={{ item }} state=directory
+      with_items: 
+       - /export/home 
+       - /export/shared
+
+    - name: Mount up device by UUID
+      ansible.posix.mount:
+        path: /export/home
+        src: /home
+        fstype: none
+        opts: bind
+        state: mounted
+
+    - name: Install /etc/exports
+      template: src=exports.j2 dest=/etc/exports owner=root group=root
+
+    - name: restart nfs server
+      service: name=nfs-kernel-server state=restarted

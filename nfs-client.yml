@@ -1,0 +1,34 @@
+# https://www.digitalocean.com/community/tutorials/how-to-set-up-an-nfs-mount-on-ubuntu-20-04
+---
+- hosts: workers
+  become: yes
+  vars:
+    client_range: "192.168.3.0/24"
+    server_ip: "chief-kublodokus"
+  tasks:
+    - name: Ensure NFS is installed.
+      apt: name={{ item }} state=latest update_cache=yes
+      with_items:
+        - nfs-common
+
+    - name: Create mount directory.
+      file: path={{ item }} state=directory
+      with_items: 
+         - /nfs/home
+         - /nfs/shared
+
+    - name: Mount up remote homes.
+      ansible.posix.mount:
+        path: /nfs/home
+        src: "{{ server_ip }}:/export/home"
+        fstype: nfs
+        opts: auto,nofail,noatime,nolock,intr,tcp,actimeo=1800
+        state: mounted     
+
+    - name: Mount up shared directory.
+      ansible.posix.mount:
+        path: /nfs/shared
+        src: "{{ server_ip }}:/export/shared"
+        fstype: nfs
+        opts: auto,nofail,noatime,nolock,intr,tcp,actimeo=1800
+        state: mounted      

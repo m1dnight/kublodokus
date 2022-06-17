@@ -1,22 +1,41 @@
 ---
-- name: Update all.
+- name: Initial setup.
   hosts: all
   become: true
+  vars:
+    regular_user: "christophe"
 
   tasks:
   - name: Update and upgrade apt packages
     apt:
       upgrade: 'yes'
+      autoclean: 'yes'
+      autoremove: 'yes'
       update_cache: 'yes'
       cache_valid_time: 86400 # 1 day
 
   - name: Install Initial Packages
     apt: 
-      name: ['emacs-nox', 'curl', 'wget', 'git', 'htop'] 
+      name: ['emacs-nox', 'curl', 'wget', 'git', 'htop', 'tmux', 'avahi-daemon', 'locales'] 
       state: latest
 
-  - name: Update default password.
-    user: 
-      name: christophe
-      update_password: always 
-      password: "{{ newpassword|password_hash('sha512') }}"
+  - name: Allow normal user to run all commands as sudo.
+    community.general.sudoers:
+      name: sudo-passwordless
+      state: present
+      user: "{{ regular_user }}"
+      commands: ALL  
+
+  - name: Set locale to en_US.UTF-8
+    community.general.locale_gen:
+      name: en_US.UTF-8
+      state: present
+
+  - name: test | Build hosts file
+    lineinfile:
+      dest: /etc/hosts
+      regexp: '.*{{ item }}$'
+      line: '{{ hostvars[item].ansible_default_ipv4.address }} {{item}}'
+      state: present
+    when: hostvars[item].ansible_default_ipv4.address is defined
+    with_items: '{{ groups["all"] }}'
