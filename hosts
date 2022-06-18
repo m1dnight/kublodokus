@@ -5,3 +5,7 @@ chief-kublodokus
 kublodokus-0
 kublodokus-1
 kublodokus-2
+
+[cluster:children]
+chiefs
+workers
