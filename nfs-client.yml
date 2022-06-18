@@ -22,7 +22,7 @@
         path: /nfs/home
         src: "{{ server_ip }}:/export/home"
         fstype: nfs
-        opts: auto,nofail,noatime,nolock,intr,tcp,actimeo=1800
+        opts: auto,nofail,noatime,nolock,intr,tcp,actimeo=1800,retry=0
         state: mounted     
 
     - name: Mount up shared directory.
