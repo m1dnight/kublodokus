@@ -25,3 +25,22 @@ ansible-galaxy collection install community.general
    ```
    ansible-playbook playbook.yml -f 4
    ```
+
+# NFS Server and Client 
+
+ - Install the server.
+   ```
+   ansible-playbook nfs-server.yml
+   ```
+
+ - Install the clients. 
+   ```
+   ansible-playbook nfs-client.yml -f4
+   ```
+
+# Elixir 
+
+ - Install Elixir 
+   ```
+  ansible-playbook elixir.yml -f4
+   ```
