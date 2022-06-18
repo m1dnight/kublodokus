@@ -1,6 +1,6 @@
 ---
 - name: Initial setup.
-  hosts: all
+  hosts: cluster
   become: true
   vars:
     regular_user: "christophe"
