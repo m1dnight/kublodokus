@@ -16,7 +16,7 @@
 
   - name: Install Initial Packages
     apt: 
-      name: ['emacs-nox', 'curl', 'wget', 'git', 'htop', 'tmux', 'avahi-daemon', 'locales'] 
+      name: ['emacs-nox', 'curl', 'wget', 'git', 'htop', 'tmux', 'avahi-daemon', 'locales', 'iperf'] 
       state: latest
 
   - name: Allow normal user to run all commands as sudo.
